@@ -1,0 +1,7 @@
+# files
+
+# folders
+/.vscode/
+/**/*test*/
+/**/node_modules/
+
