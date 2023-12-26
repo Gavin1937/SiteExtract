@@ -1,7 +1,7 @@
 {
   "name": "backend",
   "version": "0.0.1",
-  "description": "siteExtract backend",
+  "description": "SiteExtract backend",
   "main": "index.js",
   "scripts": {
     "dev": "nodemon index.js"
