@@ -72,8 +72,9 @@ if ('root_save_path' in config && config.root_save_path !== null) {
           return;
         }
       }
-      target_path = path.join(config.root_save_path, target_path);
-      let relative = path.relative(config.root_save_path, target_path);
+      let root_path = path.normalize(config.root_save_path);
+      target_path = path.normalize(path.join(root_path, target_path));
+      let relative = path.relative(root_path, target_path);
       let is_subdir = relative && !relative.startsWith('..') && !path.isAbsolute(relative);
       if (!is_subdir) {
         res.status(400).json({
