@@ -15,7 +15,7 @@ class Extractor
     
     // load runners
     this.runners = {
-      default: require('./plugin/default_runner.js')
+      default: require('./plugin/default-runner.js')
     };
     if ('runners' in config) {
       for (const runner_name in config.runners) {
