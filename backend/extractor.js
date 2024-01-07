@@ -9,6 +9,9 @@ class Extractor
   
   constructor(config, logger) {
     this.config = config;
+    if ('runner-map' in this.config) {
+      this.runner_map = require(this.config['runner-map']);
+    }
     this.logger = logger;
     this.logger.debug(`${JSON.stringify(this.config)}`)
     
@@ -29,6 +32,12 @@ class Extractor
   async extract(request_option, runner, url, options) {
     return new Promise(async (resolve, reject) => {
       try {
+        // try find runner
+        if (runner === null) {
+          runner = this.find_runner(url);
+        }
+        this.logger.debug(`runner: ${runner}`);
+        
         // make request
         let axios_option = {
           method: (('method' in request_option) ? request_option.method : 'GET'),
@@ -99,6 +108,14 @@ class Extractor
     });
   }
   
+  find_runner(url) {
+    for (const key in this.runner_map) {
+      if (url.match(new RegExp(key))) {
+        return this.runner_map[key];
+      }
+    }
+    return 'default';
+  }
 }
 
 module.exports = Extractor;

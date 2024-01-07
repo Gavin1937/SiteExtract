@@ -24,7 +24,7 @@ app.post('/api/extract', async (req, res) => {
       return;
     }
     let url = req.body.url;
-    let runner = ('runner' in req.body) ? req.body.runner : 'default';
+    let runner = ('runner' in req.body) ? req.body.runner : null;
     let request_options = ('request_options' in req.body) ? req.body.request_options : {};
     let runner_options = ('runner_options' in req.body) ? req.body.runner_options : {};
     
