@@ -1,4 +1,7 @@
 # files
+*test*
+*.md
+*.log
 
 # folders
 /.vscode/

@@ -2,16 +2,19 @@
   "name": "backend",
   "version": "0.0.1",
   "description": "SiteExtract backend",
-  "main": "index.js",
+  "main": "server.js",
   "scripts": {
-    "dev": "nodemon index.js"
+    "dev": "nodemon server.js"
   },
   "author": "",
   "license": "ISC",
   "dependencies": {
     "axios": "^1.6.2",
+    "body-parser": "^1.20.2",
     "express": "^4.18.2",
+    "jsdom": "^23.0.1",
     "nodemon": "^3.0.2",
-    "turndown": "^7.1.2"
+    "turndown": "^7.1.2",
+    "winston": "^3.11.0"
   }
 }
