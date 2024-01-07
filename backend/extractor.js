@@ -8,7 +8,9 @@ class Extractor
 {
   
   constructor(config, logger) {
+    this.config = config;
     this.logger = logger;
+    this.logger.debug(`${JSON.stringify(this.config)}`)
     
     this.turndownService = new TurndownService();
     this.turndownService.use(keepDetails);
@@ -17,8 +19,8 @@ class Extractor
     this.runners = {
       default: require('./plugin/default-runner.js')
     };
-    if ('runners' in config) {
-      for (const runner_name in config.runners) {
+    if ('runners' in this.config) {
+      for (const runner_name in this.config.runners) {
         this.runners[runner_name] = require(`./plugin/${runner_name}`);
       }
     }
@@ -60,9 +62,14 @@ class Extractor
   }
   
   async run_preprocess(runner, doc, options) {
-    return new Promise((resolve, reject) => {
+    return new Promise(async (resolve, reject) => {
       if (runner in this.runners) {
-        this.runners[runner].preprocess(doc, options).then((result) => {
+        // run parent runner
+        if (runner !== 'default' && 'after' in this.config.runners[runner]) {
+          doc = await this.run_preprocess(this.config.runners[runner]['after'], doc, options);
+        }
+        // run current runner
+        await this.runners[runner].preprocess(doc, options).then((result) => {
           resolve(result);
         }).catch((error) => {
           reject(error);
@@ -74,9 +81,14 @@ class Extractor
   }
   
   async run_postprocess(runner, markdown, options) {
-    return new Promise((resolve, reject) => {
+    return new Promise(async (resolve, reject) => {
       if (runner in this.runners) {
-        this.runners[runner].postprocess(markdown, options).then((result) => {
+        // run parent runner
+        if (runner !== 'default' && 'after' in this.config.runners[runner]) {
+          markdown = await this.run_postprocess(this.config.runners[runner]['after'], markdown, options);
+        }
+        // run current runner
+        await this.runners[runner].postprocess(markdown, options).then((result) => {
           resolve(result);
         }).catch((error) => {
           reject(error);

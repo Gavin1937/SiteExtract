@@ -33,7 +33,7 @@ module.exports = {
   
   // process markdown string received from website
   postprocess: async function(markdown, options) {
-    return markdown;
+    return markdown + '\n';
   }
   
 };
