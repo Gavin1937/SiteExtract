@@ -1,5 +1,6 @@
 var config = require("./config/config.json");
 const express = require('express')
+var cors = require('cors')
 var bodyParser = require('body-parser');
 var logger = require('./logger.js')(config.log_filepath, config.log_level);
 const fs = require('node:fs');
@@ -9,8 +10,36 @@ var extractor = new Extractor(config.extractor_config, logger);
 
 
 const app = express()
+app.use(cors())
 app.use(bodyParser.json());
 
+
+app.get('/api/runners', async (req, res) => {
+  try {
+    let output = {
+      default: [
+        {name:'no_img',type:'binary'},
+        {name:'no_link',type:'binary'},
+      ]
+    }
+    Object.keys(config.extractor_config.runners).forEach(k => {
+      let tmp_options = config.extractor_config.runners[k].options;
+      tmp_options = tmp_options ? tmp_options : []
+      output[k] = tmp_options;
+    });
+    res.status(200).json({
+      ok: true,
+      runners: output
+    });
+  } catch (error) {
+    logger.error(`Error: ${error}`);
+    res.status(500).json({
+      ok: false,
+      message: 'Internal Server Error'
+    })
+  }
+  return;
+});
 
 app.post('/api/extract', async (req, res) => {
   try {
@@ -23,18 +52,31 @@ app.post('/api/extract', async (req, res) => {
       });
       return;
     }
+    
     let url = req.body.url;
     let runner = ('runner' in req.body) ? req.body.runner : null;
     let request_options = ('request_options' in req.body) ? req.body.request_options : {};
     let runner_options = ('runner_options' in req.body) ? req.body.runner_options : {};
     
-    let result = await extractor.extract(request_options, runner, url, runner_options);
+    let result = null;
+    try {
+      result = await extractor.extract(request_options, runner, url, runner_options);
+    } catch (extract_error) {
+      logger.error(`Error: ${extract_error}`);
+      res.status(400).json({
+        ok: false,
+        message: `Failed to request input url. ${extract_error}`
+      });
+      return;
+    }
+    
     res.status(200).json({
       ok: true,
       content: result
     });
     
   } catch (error) {
+    logger.error(`Error: ${error}`);
     res.status(500).json({
       ok: false,
       message: 'Internal Server Error'
@@ -87,7 +129,7 @@ if ('root_save_path' in config && config.root_save_path !== null) {
       
       fs.writeFile(target_path, content, (err) => {
         if (err) {
-          this.logger.error(err);
+          logger.error(err);
           res.status(400).json({
             ok: false,
             message: 'Failed to save to server'
@@ -99,7 +141,7 @@ if ('root_save_path' in config && config.root_save_path !== null) {
         });
       });
     } catch (error) {
-      this.logger.error(error);
+      logger.error(error);
       res.status(500).json({
         ok: false,
         message: 'Internal Server Error'
