@@ -1,0 +1,6 @@
+# files
+.env
+
+# folders
+/build/
+/dist/

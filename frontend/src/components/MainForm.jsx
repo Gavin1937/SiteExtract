@@ -1,8 +1,10 @@
+import axios from 'axios';
 import Form from 'react-bootstrap/Form';
 import Button from 'react-bootstrap/Button';
 import Tab from 'react-bootstrap/Tab';
 import Tabs from 'react-bootstrap/Tabs';
-import axios from 'axios';
+
+import BACKEND_URL from '../env';
 
 
 function createOptionUI(id_prefix, options) {
@@ -59,7 +61,7 @@ function createOptionUI(id_prefix, options) {
   return output;
 }
 
-function createFormSubmitHandler(backend_url, name, result_handler, setErrorMsg, additionalOnSubmitHandler) {
+function createFormSubmitHandler(name, result_handler, setErrorMsg, additionalOnSubmitHandler) {
   return function (event) {
     event.preventDefault();
     
@@ -88,7 +90,7 @@ function createFormSubmitHandler(backend_url, name, result_handler, setErrorMsg,
       "runner_options": values
     };
     axios.post(
-      `${backend_url}/api/extract`,
+      `${BACKEND_URL}/api/extract`,
       body
     ).then(resp => {
       result_handler(resp.data.content);
@@ -98,6 +100,8 @@ function createFormSubmitHandler(backend_url, name, result_handler, setErrorMsg,
       console.error(error.response.data.message);
       setErrorMsg(error.response.data.message);
       form.querySelector('button[id*="submit"]').disabled = false;
+      // scroll to top after 1ms
+      setTimeout(_ => window.scrollTo(0, 0), 1);
     });
   }
 }
@@ -107,7 +111,7 @@ function MainForm(props) {
   
   if (runners === null) {
     return (
-      <div>Form Not Ready</div>
+      <div>Server Not Ready</div>
     )
   }
   
@@ -117,7 +121,7 @@ function MainForm(props) {
       <Tab eventKey={k} title={k} key={`${k}-tab-${idx}`}>
         <Form
           id={`${k}-form`}
-          onSubmit={createFormSubmitHandler(props.backend_url, k, props.contentSetter, props.setErrorMsg, props.onFormSubmit)}
+          onSubmit={createFormSubmitHandler(k, props.contentSetter, props.setErrorMsg, props.onFormSubmit)}
         >
           <Form.Group
             className="mb-3"

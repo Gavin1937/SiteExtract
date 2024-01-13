@@ -2,24 +2,30 @@ import { useEffect, useState, useRef } from 'react';
 import { Editor } from '@toast-ui/react-editor';
 import '@toast-ui/editor/dist/toastui-editor.css';
 import axios from 'axios';
-import MainForm from '../components/MainForm';
+
 import Button from 'react-bootstrap/Button';
 import Form from 'react-bootstrap/Form';
+import Collapse from 'react-bootstrap/Collapse';
 import Container from 'react-bootstrap/Container';
 import Row from 'react-bootstrap/Row';
 import Col from 'react-bootstrap/Col';
+
+import BACKEND_URL from '../env';
+import MainForm from '../components/MainForm';
+import SaveEditorContentForm from '../components/SaveEditorContentForm';
 
 
 
 function MainPage() {
   const [runners, setRunners] = useState(null);
   const [errorMsg, setErrorMsg] = useState(null);
+  const [saveMenuText, setSaveMenuText] = useState("Save Editor Content");
+  const [expandSaveMenu, setExpandSaveMenu] = useState(false);
   const [content, setContent] = useState('');
-  const backend_url = 'http://localhost:3000';
   const editorRef = useRef(null);
   
   useEffect(() => {
-    axios.get(`${backend_url}/api/runners`).then(resp => {
+    axios.get(`${BACKEND_URL}/api/runners`).then(resp => {
       setRunners(resp.data.runners);
     }).catch(error => {
       setRunners(null);
@@ -28,7 +34,12 @@ function MainPage() {
   }, []);
   
   
-  function editorContentSetter(param) {
+  function getEditorContent() {
+    setContent(editorRef.current.editorInst.getMarkdown());
+    return editorRef.current.editorInst.getMarkdown();
+  }
+  
+  function setEditorContent(param) {
     setContent(param);
     
     editorRef.current.editorInst.setMarkdown(param);
@@ -48,7 +59,7 @@ function MainPage() {
     if (!file) return;
     var reader = new FileReader();
     reader.onload = function(e) {
-      editorContentSetter(e.target.result);
+      setEditorContent(e.target.result);
       document.querySelector('#editor-load-file-input').disabled = false;
     }
     reader.readAsText(file)
@@ -62,7 +73,7 @@ function MainPage() {
     event.preventDefault();
     
     document.querySelector('#editor-clear-input').disabled = true;
-    editorContentSetter("");
+    setEditorContent("");
     clearFileInput();
     document.querySelector('#editor-clear-input').disabled = false;
   }
@@ -79,8 +90,7 @@ function MainPage() {
       <Row className="my-3">
         <MainForm
           runners={runners ? runners : null}
-          backend_url={backend_url}
-          contentSetter={editorContentSetter}
+          contentSetter={setEditorContent}
           setErrorMsg={setErrorMsg}
           onFormSubmit={clearFileInput}
         />
@@ -91,6 +101,7 @@ function MainPage() {
         id="editor-load-file-form"
       >
         <Row className="my-3" style={{display:"flex", alignItems: "center"}}>
+          
           <Col xs={3}>
             <Form.Group>
               <Form.Label>
@@ -106,9 +117,10 @@ function MainPage() {
               />
             </Form.Group>
           </Col>
-          <Col>
+          
+          <Col xs={2} className="px-0 mx-0">
             <Button
-              variant="primary"
+              variant="danger"
               type="button"
               key="editor-clear-input"
               id="editor-clear-input"
@@ -117,8 +129,35 @@ function MainPage() {
               Clear Editor
             </Button>
           </Col>
+          
+          <Col className="px-0 mx-0">
+            <Button
+              variant="success"
+              type="button"
+              key="editor-save-input"
+              id="editor-save-input"
+              onClick={_ => {
+                setExpandSaveMenu(!expandSaveMenu);
+                setSaveMenuText(expandSaveMenu ? "Save Editor Content" : "Hide Menu");
+              }}
+              aria-expanded={expandSaveMenu}
+            >
+              {saveMenuText}
+            </Button>
+          </Col>
+          
         </Row>
       </Form>
+      
+      <Collapse in={expandSaveMenu}>
+        <div className="py-0 my-0 px-0 mx-0">
+          <SaveEditorContentForm
+            contentGetter={getEditorContent}
+            isServerReady={runners !== null}
+            setErrorMsg={setErrorMsg}
+          />
+        </div>
+      </Collapse>
       
       <Row className="my-3">
         <Editor

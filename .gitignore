@@ -1,10 +1,10 @@
 # files
-*test*
+*testing*
 *.md
 *.log
 
 # folders
 /.vscode/
-/**/*test*/
+/**/*testing*/
 /**/node_modules/
 
