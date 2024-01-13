@@ -61,7 +61,7 @@ function createOptionUI(id_prefix, options) {
   return output;
 }
 
-function createFormSubmitHandler(name, result_handler, setErrorMsg, additionalOnSubmitHandler) {
+function createFormSubmitHandler(name, result_handler, setErrorMsg, additionalOnSubmitHandler, navigate) {
   return function (event) {
     event.preventDefault();
     
@@ -91,12 +91,17 @@ function createFormSubmitHandler(name, result_handler, setErrorMsg, additionalOn
     };
     axios.post(
       `${BACKEND_URL}/api/extract`,
-      body
+      body,
+      {withCredentials:true}
     ).then(resp => {
       result_handler(resp.data.content);
       setErrorMsg(null);
       form.querySelector('button[id*="submit"]').disabled = false;
     }).catch(error => {
+      if (error.response.status === 401) {
+        navigate(`/login?reason=401`)
+        return;
+      }
       console.error(error.response.data.message);
       setErrorMsg(error.response.data.message);
       form.querySelector('button[id*="submit"]').disabled = false;
@@ -121,7 +126,7 @@ function MainForm(props) {
       <Tab eventKey={k} title={k} key={`${k}-tab-${idx}`}>
         <Form
           id={`${k}-form`}
-          onSubmit={createFormSubmitHandler(k, props.contentSetter, props.setErrorMsg, props.onFormSubmit)}
+          onSubmit={createFormSubmitHandler(k, props.contentSetter, props.setErrorMsg, props.onFormSubmit, props.navigate)}
         >
           <Form.Group
             className="mb-3"

@@ -7,6 +7,7 @@ import {
   Navigate
 } from "react-router-dom";
 import MainPage from './pages/MainPage';
+import LoginPage from './pages/LoginPage';
 
 // include bootstrap css
 import 'bootstrap/dist/css/bootstrap.css';
@@ -17,6 +18,7 @@ root.render(
   <Router basename="/">
     <Routes>
       <Route exact path="/" element={ <MainPage/> } />
+      <Route exact path="/login" element={ <LoginPage/> } />
     </Routes>
   </Router>
 );

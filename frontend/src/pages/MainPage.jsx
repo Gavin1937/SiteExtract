@@ -13,10 +13,12 @@ import Col from 'react-bootstrap/Col';
 import BACKEND_URL from '../env';
 import MainForm from '../components/MainForm';
 import SaveEditorContentForm from '../components/SaveEditorContentForm';
+import { useNavigate } from 'react-router-dom';
 
 
 
 function MainPage() {
+  const navigate = useNavigate();
   const [runners, setRunners] = useState(null);
   const [errorMsg, setErrorMsg] = useState(null);
   const [saveMenuText, setSaveMenuText] = useState("Save Editor Content");
@@ -25,11 +27,14 @@ function MainPage() {
   const editorRef = useRef(null);
   
   useEffect(() => {
-    axios.get(`${BACKEND_URL}/api/runners`).then(resp => {
+    axios.get(`${BACKEND_URL}/api/runners`, {withCredentials:true}).then(resp => {
       setRunners(resp.data.runners);
     }).catch(error => {
       setRunners(null);
-      console.log(`Failed to get runner options.\nException: ${error}`);
+      if (error.response.status === 401) {
+        navigate(`/login?reason=401`)
+      }
+      console.log(`Failed to get runner options.\nException: ${error.response.data.message}`);
     });
   }, []);
   
@@ -93,6 +98,7 @@ function MainPage() {
           contentSetter={setEditorContent}
           setErrorMsg={setErrorMsg}
           onFormSubmit={clearFileInput}
+          navigate={navigate}
         />
       </Row>
       

@@ -48,11 +48,16 @@ function SaveEditorContentForm(props) {
     try {
       let resp = await axios.post(
         `${BACKEND_URL}/api/savetoserver`,
-        body
+        body,
+        {withCredentials:true}
       );
       props.setErrorMsg(null);
     } catch (error) {
       console.error(`Error: ${error.response.data.message}`);
+      if (error.response.status === 401) {
+        props.navigate(`/login?reason=401`)
+        return;
+      }
       props.setErrorMsg(`Error: ${error.response.data.message}`);
       // scroll to top after 1ms
       setTimeout(_ => window.scrollTo(0, 0), 1);
