@@ -1,10 +1,16 @@
+import { useState } from 'react';
 import axios from 'axios';
 import Form from 'react-bootstrap/Form';
 import Button from 'react-bootstrap/Button';
+import Container from 'react-bootstrap/Container';
+import Row from 'react-bootstrap/Row';
+import Col from 'react-bootstrap/Col';
 import Tab from 'react-bootstrap/Tab';
 import Tabs from 'react-bootstrap/Tabs';
 
 import BACKEND_URL from '../env';
+import RequestEditor from './RequestEditor';
+
 
 
 function createOptionUI(id_prefix, options) {
@@ -61,7 +67,7 @@ function createOptionUI(id_prefix, options) {
   return output;
 }
 
-function createFormSubmitHandler(name, result_handler, setErrorMsg, additionalOnSubmitHandler, navigate) {
+function createFormSubmitHandler(name, currentRequestOptions, result_handler, setErrorMsg, additionalOnSubmitHandler, navigate) {
   return function (event) {
     event.preventDefault();
     
@@ -87,7 +93,8 @@ function createFormSubmitHandler(name, result_handler, setErrorMsg, additionalOn
     let body = {
       "url": url,
       "runner": name,
-      "runner_options": values
+      "runner_options": values,
+      "request_options": currentRequestOptions
     };
     axios.post(
       `${BACKEND_URL}/api/extract`,
@@ -113,6 +120,7 @@ function createFormSubmitHandler(name, result_handler, setErrorMsg, additionalOn
 
 function MainForm(props) {
   let runners = props.runners;
+  const [requestOptions, setRequestOptions] = useState(null);
   
   if (runners === null) {
     return (
@@ -124,36 +132,49 @@ function MainForm(props) {
   Object.keys(runners).forEach((k,idx) => {
     tabs.push((
       <Tab eventKey={k} title={k} key={`${k}-tab-${idx}`}>
-        <Form
-          id={`${k}-form`}
-          onSubmit={createFormSubmitHandler(k, props.contentSetter, props.setErrorMsg, props.onFormSubmit, props.navigate)}
-        >
-          <Form.Group
-            className="mb-3"
-            key={`${k}-${idx}-url-group-elem-0`}
-            id={`${k}-${idx}-url-group-elem-0`}
+        <Container>
+          <Form
+            id={`${k}-form`}
+            onSubmit={createFormSubmitHandler(k, requestOptions, props.contentSetter, props.setErrorMsg, props.onFormSubmit, props.navigate)}
           >
-            <Form.Label>URL</Form.Label>
-            <Form.Control
-              type="text"
-              id={`${k}-input-${idx}-value`}
-              key={`${k}-input-${idx}-value`}
-              aria-describedby={`${k}-input-${idx}`}
-              placeholder="Enter URL"
-            />
-          </Form.Group>
-          
-          {createOptionUI(`${k}-${idx}`, runners[k])}
-          
-          <Button
-            variant="primary"
-            type="submit"
-            key={`${k}-submit-${idx}`}
-            id={`${k}-submit-${idx}`}
-          >
-            Submit
-          </Button>
-        </Form>
+            <Row>
+              <Form.Group
+                className="mb-3"
+                key={`${k}-${idx}-url-group-elem-0`}
+                id={`${k}-${idx}-url-group-elem-0`}
+              >
+                <Form.Label>URL</Form.Label>
+                <Form.Control
+                  type="text"
+                  id={`${k}-input-${idx}-value`}
+                  key={`${k}-input-${idx}-value`}
+                  aria-describedby={`${k}-input-${idx}`}
+                  placeholder="Enter URL"
+                />
+              </Form.Group>
+            </Row>
+            
+            <Row>
+            {createOptionUI(`${k}-${idx}`, runners[k])}
+            </Row>
+            
+            <Row>
+              <Col xs={3}>
+                <RequestEditor request={requestOptions} setRequest={setRequestOptions}/>
+              </Col>
+              <Col>
+                <Button
+                  variant="primary"
+                  type="submit"
+                  key={`${k}-submit-${idx}`}
+                  id={`${k}-submit-${idx}`}
+                >
+                  Submit
+                </Button>
+              </Col>
+            </Row>
+          </Form>
+        </Container>
       </Tab>
     ));
   })

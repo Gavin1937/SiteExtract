@@ -10,7 +10,7 @@ import MainPage from './pages/MainPage';
 import LoginPage from './pages/LoginPage';
 
 // include bootstrap css
-import 'bootstrap/dist/css/bootstrap.css';
+import 'bootstrap/dist/css/bootstrap.min.css';
 
 
 const root = ReactDOM.createRoot(document.getElementById('root'));

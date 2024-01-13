@@ -42,9 +42,10 @@ class Extractor
         let axios_option = {
           method: (('method' in request_option) ? request_option.method : 'GET'),
           url: url,
-          headers: (('headers' in request_option) ? request_option.headers : null),
+          headers: (('headers' in request_option) ? request_option.headers : {}),
           cookies: (('cookies' in request_option) ? request_option.cookies : null),
         };
+        axios_option.headers['User-Agent'] = 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36';
         let resp = await axios(axios_option);
         
         // sanitize html

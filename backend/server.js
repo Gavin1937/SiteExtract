@@ -118,7 +118,7 @@ app.post('/api/extract', async (req, res) => {
   }
 });
 
-if ('root_save_path' in config && config.root_save_path !== null) {
+if (config.root_save_path && config.root_save_path !== null) {
   var forbidden_characters = [
     '..', '...', '....',
     '$', '|', '~', '!',
