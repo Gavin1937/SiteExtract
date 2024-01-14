@@ -63,12 +63,15 @@ function SaveEditorContentForm(props) {
       );
       props.setErrorMsg(null);
     } catch (error) {
-      console.error(`Error: ${error.response.data.message}`);
+      let error_msg = error.response.data.message;
       if (error.response.status === 401) {
         props.navigate(`/login?reason=401`)
         return;
+      } else if (error.response.status === 404) {
+        error_msg = "Server Response 404 Not Found, Maybe SaveToServer is Disabled";
       }
-      props.setErrorMsg(`Error: ${error.response.data.message}`);
+      console.error(`Error: ${error_msg}`);
+      props.setErrorMsg(`Error: ${error_msg}`);
       // scroll to top after 1ms
       setTimeout(_ => window.scrollTo(0, 0), 1);
     }
