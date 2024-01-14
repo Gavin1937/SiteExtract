@@ -25,7 +25,10 @@ REACT_APP_BACKEND_URL="http://backend_url"
 Under `frontend` folder, you can build Docker image with:
 
 ```sh
-docker build -t siteextract-frontend .
+docker build \
+    --build-arg='BACKEND_URL=/' \
+    --build-arg='BACKEND_URL=http://backend_url' \
+    -t siteextract-frontend .
 ```
 
 And then, you can run Docker container with:
@@ -33,8 +36,6 @@ And then, you can run Docker container with:
 ```sh
 docker run -d --rm \
     --name siteextract-frontend \
-    --build-arg='BACKEND_URL=/' \
-    --build-arg='BACKEND_URL=http://backend_url' \
     -p 3001:3001 \
     siteextract-frontend
 ```

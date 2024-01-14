@@ -18,7 +18,7 @@ services:
       context: frontend/
       args:
         BASENAME: "${FRONTEND_BASENAME}"
-        BACKEND_URL: ""
+        BACKEND_URL: "${FRONTEND_BASENAME}"
     image: siteextract-frontend
     container_name: siteextract-frontend
     restart: unless-stopped
@@ -29,8 +29,11 @@ services:
     restart: unless-stopped
     ports:
       - ${APP_PORT}:80
+    environment:
+      NGINX_ENVSUBST_OUTPUT_DIR: /etc/nginx
+      NGINX_FRONTEND_BASENAME: "${FRONTEND_BASENAME}"
     depends_on:
       - siteextract-backend
       - siteextract-frontend
     volumes:
-      - ./nginx.conf:/etc/nginx/nginx.conf
+      - ./nginx.conf:/etc/nginx/templates/nginx.conf.template
