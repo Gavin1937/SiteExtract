@@ -75,7 +75,7 @@ function createFormSubmitHandler(name, currentRequestOptions, result_handler, se
     
     let values = {};
     let form = document.querySelector(`form[id*="${name}"]`);
-    form.querySelector('button[id*="submit"]').disabled = true;
+    document.querySelectorAll('.action-btn').forEach(a => {a.disabled = true;});
     form.querySelectorAll(`[id*="group-elem"]`).forEach(group => {
       let group_meta = group.getAttribute('id');
       group_meta = group_meta.replace(`${name}-`, '').split('-');
@@ -103,7 +103,7 @@ function createFormSubmitHandler(name, currentRequestOptions, result_handler, se
     ).then(resp => {
       result_handler(resp.data.content);
       setErrorMsg(null);
-      form.querySelector('button[id*="submit"]').disabled = false;
+      document.querySelectorAll('.action-btn').forEach(a => {a.disabled = false;});
     }).catch(error => {
       if (error.response.status === 401) {
         navigate(`/login?reason=401`)
@@ -111,7 +111,7 @@ function createFormSubmitHandler(name, currentRequestOptions, result_handler, se
       }
       console.error(error.response.data.message);
       setErrorMsg(error.response.data.message);
-      form.querySelector('button[id*="submit"]').disabled = false;
+      document.querySelectorAll('.action-btn').forEach(a => {a.disabled = false;});
       // scroll to top after 1ms
       setTimeout(_ => window.scrollTo(0, 0), 1);
     });
@@ -168,6 +168,7 @@ function MainForm(props) {
                   type="submit"
                   key={`${k}-submit-${idx}`}
                   id={`${k}-submit-${idx}`}
+                  className="action-btn"
                 >
                   Submit
                 </Button>

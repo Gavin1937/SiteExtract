@@ -6,13 +6,21 @@ import Row from 'react-bootstrap/Row';
 import Col from 'react-bootstrap/Col';
 
 import BACKEND_URL from '../env';
+import '../css/fadeout.css';
 
 
 function SaveEditorContentForm(props) {
   
+  function disableActionBtn() {
+    document.querySelectorAll('.action-btn').forEach(a => {a.disabled = true;});
+  }
+  
+  function enableActionBtn() {
+    document.querySelectorAll('.action-btn').forEach(a => {a.disabled = false;});
+  }
+  
   async function onSaveToFile() {
-    let btn = document.querySelector('#save-editor-save-file-btn');
-    btn.disabled = true;
+    disableActionBtn();
     // https://stackoverflow.com/a/67806663
     try {
       const content = props.contentGetter();
@@ -32,15 +40,17 @@ function SaveEditorContentForm(props) {
     } catch(error) {
       console.log("Save To File Canceled");
     }
-    btn.disabled = false;
+    enableActionBtn();
   }
   
   async function onSaveToServer(event) {
     event.preventDefault();
     
-    let btn = document.querySelector('#save-editor-save-server-btn');
-    btn.disabled = true;
+    disableActionBtn();
     let input = document.querySelector('#save-editor-save-server-input');
+    let prompt = document.querySelector('#save-editor-save-server-prompt');
+    prompt.style.display = 'inline-block';
+    prompt.style.animation = null;
     let body = {
       path: input.value,
       content: props.contentGetter(),
@@ -62,7 +72,8 @@ function SaveEditorContentForm(props) {
       // scroll to top after 1ms
       setTimeout(_ => window.scrollTo(0, 0), 1);
     }
-    btn.disabled = false;
+    enableActionBtn();
+    prompt.style.animation = 'fadeout-animate 2.5s forwards';
   }
   
   return (
@@ -72,6 +83,7 @@ function SaveEditorContentForm(props) {
           <Button
             key={"save-editor-save-file-btn"}
             id={"save-editor-save-file-btn"}
+            className="action-btn"
             onClick={onSaveToFile}
           >
             Save To File
@@ -98,14 +110,24 @@ function SaveEditorContentForm(props) {
             </Col>
           </Row>
           <Row className="py-1">
-            <Col className="px-0 mx-0">
+            <Col className="px-0 mx-0 d-flex align-items-center">
               <Button
                 type="submit"
                 key={"save-editor-save-server-btn"}
                 id={"save-editor-save-server-btn"}
+                className="action-btn"
               >
                 Save To Server
               </Button>
+              <Form.Text
+                as="div"
+                key={"save-editor-save-server-prompt"}
+                id={"save-editor-save-server-prompt"}
+                style={{color:"green", fontWeight:"bold", fontSize:"x-large", display:"none"}}
+                className="px-1 mx-1 fadeout-static"
+              >
+                Success!
+              </Form.Text>
             </Col>
           </Row>
         </Form>

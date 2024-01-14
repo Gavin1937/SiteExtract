@@ -163,6 +163,7 @@ function RequestEditor(props) {
   
   function showModal() {
     setModalState(true);
+    document.querySelectorAll('.action-btn').forEach(a => {a.disabled = true;});
     if (isFirstTime) {
       setIsFirstTime(false);
     } else {
@@ -172,6 +173,7 @@ function RequestEditor(props) {
   
   function hideModal() {
     setModalState(false);
+    document.querySelectorAll('.action-btn').forEach(a => {a.disabled = false;});
     props.setRequest(getEditorContent());
   }
   
@@ -189,7 +191,11 @@ function RequestEditor(props) {
   
   return (
     <div>
-      <Button variant="primary" onClick={showModal}>
+      <Button
+        variant="primary"
+        className="action-btn"
+        onClick={showModal}
+      >
         Edit HTTP Request Options
       </Button>
       <Modal

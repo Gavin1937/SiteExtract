@@ -55,6 +55,14 @@ function MainPage() {
     }, 1)
   }
   
+  function disableActionBtn() {
+    document.querySelectorAll('.action-btn').forEach(a => {a.disabled = true;});
+  }
+  
+  function enableActionBtn() {
+    document.querySelectorAll('.action-btn').forEach(a => {a.disabled = false;});
+  }
+  
   function onLoadMarkdownFromFile(event) {
     event.preventDefault();
     document.querySelector('#editor-load-file-input').disabled = true;
@@ -76,10 +84,10 @@ function MainPage() {
   function onClearMarkdownInEditor(event) {
     event.preventDefault();
     
-    document.querySelector('#editor-clear-input').disabled = true;
+    disableActionBtn();
     setEditorContent("");
     clearFileInput();
-    document.querySelector('#editor-clear-input').disabled = false;
+    enableActionBtn();
   }
   
   return (
@@ -129,6 +137,7 @@ function MainPage() {
               type="button"
               key="editor-clear-input"
               id="editor-clear-input"
+              className="action-btn"
               onClick={onClearMarkdownInEditor}
             >
               Clear Editor
@@ -141,9 +150,12 @@ function MainPage() {
               type="button"
               key="editor-save-input"
               id="editor-save-input"
+              className="action-btn"
               onClick={_ => {
+                disableActionBtn();
                 setExpandSaveMenu(!expandSaveMenu);
                 setSaveMenuText(expandSaveMenu ? "Save Editor Content" : "Hide Menu");
+                enableActionBtn();
               }}
               aria-expanded={expandSaveMenu}
             >

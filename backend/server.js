@@ -140,7 +140,7 @@ if (config.root_save_path && config.root_save_path !== null) {
       if (!(req.body.path) || !(req.body.content)) {
         return res.status(400).json({
           ok: false,
-          message: 'Missing json parameter'
+          message: 'Missing Server Path or Content'
         });
       }
       let target_path = req.body.path;

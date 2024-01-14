@@ -1,0 +1,12 @@
+.fadeout-static {
+  opacity: 100%;
+}
+
+@keyframes fadeout-animate {
+  from {
+    opacity: 100%;
+  }
+  to {
+    opacity: 0%;
+  }
+}
