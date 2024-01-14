@@ -80,8 +80,8 @@ class Extractor
     return new Promise(async (resolve, reject) => {
       if (this.runners[runner]) {
         // run parent runner
-        if (runner !== 'default' && this.config.runners[runner].after) {
-          doc = await this.run_preprocess(this.config.runners[runner].after, doc, options);
+        if (runner !== 'default' && this.config.runners[runner].before) {
+          doc = await this.run_preprocess(this.config.runners[runner].before, doc, options);
         }
         // run current runner
         await this.runners[runner].preprocess(doc, options).then((result) => {
@@ -99,8 +99,8 @@ class Extractor
     return new Promise(async (resolve, reject) => {
       if (this.runners[runner]) {
         // run parent runner
-        if (runner !== 'default' && this.config.runners[runner].after) {
-          markdown = await this.run_postprocess(this.config.runners[runner].after, markdown, options);
+        if (runner !== 'default' && this.config.runners[runner].before) {
+          markdown = await this.run_postprocess(this.config.runners[runner].before, markdown, options);
         }
         // run current runner
         await this.runners[runner].postprocess(markdown, options).then((result) => {

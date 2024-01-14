@@ -15,7 +15,7 @@
         "runner-map": "/path/to/runner-map.json",
         "runners": {
             "example-runner": {
-                "after": "default",
+                "before": "default",
                 "options": [
                     {
                         "name": "option_1",
