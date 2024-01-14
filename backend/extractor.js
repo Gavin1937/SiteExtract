@@ -1,7 +1,8 @@
 const axios = require('axios');
 const { JSDOM } = require("jsdom");
-var TurndownService = require('turndown')
-const keepDetails = require('./keep-details.js')
+var TurndownService = require('turndown');
+const keepDetails = require('./keep-details.js');
+const loadPlugin = require('./plugin/loader.js');
 
 
 class Extractor
@@ -24,7 +25,11 @@ class Extractor
     };
     if ('runners' in this.config) {
       for (const runner_name in this.config.runners) {
-        this.runners[runner_name] = require(`./plugin/${runner_name}`);
+        loadPlugin(runner_name).then((mod) => {
+          this.runners[runner_name] = mod;
+        }).catch((error) => {
+          this.logger.error('loadPlugin:', error);
+        });
       }
     }
   }
