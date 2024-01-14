@@ -20,6 +20,7 @@ import SaveEditorContentForm from '../components/SaveEditorContentForm';
 function MainPage() {
   const navigate = useNavigate();
   const [runners, setRunners] = useState(null);
+  const [isServerReady, setIsServerReady] = useState(false);
   const [errorMsg, setErrorMsg] = useState(null);
   const [saveMenuText, setSaveMenuText] = useState("Save Editor Content");
   const [expandSaveMenu, setExpandSaveMenu] = useState(false);
@@ -29,12 +30,17 @@ function MainPage() {
   useEffect(() => {
     axios.get(`${env.BACKEND_URL}/api/runners`, {withCredentials:true}).then(resp => {
       setRunners(resp.data.runners);
+      setIsServerReady(true);
     }).catch(error => {
       setRunners(null);
-      if (error.response.status === 401) {
+      setIsServerReady(false);
+      let msg = 'Cannot reach server';
+      if (error.response && error.response.status === 401) {
+        msg = error.response.data.message;
         navigate(`/login?reason=401`)
       }
-      console.log(`Failed to get runner options.\nException: ${error.response.data.message}`);
+      console.log(`Failed to get runner options.\nException: ${msg}`);
+      setErrorMsg(msg);
     });
   }, []);
   
@@ -106,6 +112,7 @@ function MainPage() {
           setErrorMsg={setErrorMsg}
           onFormSubmit={clearFileInput}
           navigate={navigate}
+          isServerReady={isServerReady}
         />
       </Row>
       
@@ -161,7 +168,6 @@ function MainPage() {
               className="action-btn"
               onClick={_ => {
                 disableActionBtn();
-                document.querySelector('#save-editor-save-server-prompt').style.display = "none";
                 setExpandSaveMenu(!expandSaveMenu);
                 setSaveMenuText(expandSaveMenu ? "Save Editor Content" : "Hide Menu");
                 enableActionBtn();
@@ -179,7 +185,7 @@ function MainPage() {
         <div className="py-0 my-0 px-0 mx-0">
           <SaveEditorContentForm
             contentGetter={getEditorContent}
-            isServerReady={runners !== null}
+            isServerReady={isServerReady}
             setErrorMsg={setErrorMsg}
           />
         </div>

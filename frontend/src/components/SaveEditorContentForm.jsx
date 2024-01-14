@@ -64,12 +64,15 @@ function SaveEditorContentForm(props) {
       prompt.style.animation = null;
       setTimeout(() => {prompt.style.animation = 'fadeout-animate 2.5s forwards';}, 1);
     } catch (error) {
-      let error_msg = error.response.data.message;
-      if (error.response.status === 401) {
-        props.navigate(`/login?reason=401`)
-        return;
-      } else if (error.response.status === 404) {
-        error_msg = "Server Response 404 Not Found, Maybe SaveToServer is Disabled";
+      let error_msg = 'Cannot reach server';
+      if (error.response) {
+        error_msg = error.response.data.message;
+        if (error.response.status === 401) {
+          props.navigate(`/login?reason=401`)
+          return;
+        } else if (error.response.status === 404) {
+          error_msg = "Server Response 404 Not Found, Maybe SaveToServer is Disabled";
+        }
       }
       console.error(`Error: ${error_msg}`);
       props.setErrorMsg(`Error: ${error_msg}`);

@@ -122,7 +122,7 @@ function MainForm(props) {
   let runners = props.runners;
   const [requestOptions, setRequestOptions] = useState(null);
   
-  if (runners === null) {
+  if (!runners || !props.isServerReady) {
     return (
       <div>Server Not Ready</div>
     )
