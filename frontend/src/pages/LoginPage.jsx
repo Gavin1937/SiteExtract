@@ -27,7 +27,8 @@ function LoginPage() {
     event.preventDefault();
     
     let input = document.querySelector('#login-form-input');
-    Cookies.set('siteextract_token', input.value);
+    // expires in 60 days
+    Cookies.set('siteextract_token', input.value, { expires: 60 });
     
     navigate("/");
   }
