@@ -1,0 +1,35 @@
+version: "3"
+services:
+  
+  siteextract-backend:
+    build:
+      context: backend/
+    image: siteextract-backend
+    container_name: siteextract-backend
+    restart: unless-stopped
+    volumes:
+      - "./data/config:/src/config"
+      - "./data/plugin:/src/plugin/plugin"
+      - "./data:/src/log"
+      - "./data/data:/src/data"
+  
+  siteextract-frontend:
+    build:
+      context: frontend/
+      args:
+        BACKEND_URL: ""
+    image: siteextract-frontend
+    container_name: siteextract-frontend
+    restart: unless-stopped
+  
+  siteextract-nginx:
+    image: nginx:alpine
+    container_name: siteextract-nginx
+    restart: unless-stopped
+    ports:
+      - ${APP_PORT}:80
+    depends_on:
+      - siteextract-backend
+      - siteextract-frontend
+    volumes:
+      - ./nginx.conf:/etc/nginx/nginx.conf

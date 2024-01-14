@@ -1,3 +1,4 @@
 *
 !.gitignore
+!loader.js
 !default-runner.js

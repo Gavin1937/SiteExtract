@@ -1,0 +1,36 @@
+{
+    "host": "localhost",
+    "port": 3000,
+    "log_filepath": "/path/to/siteextract.log",
+    "log_level": "debug",
+    "root_save_path": "/path/to/SiteExtract/backend/data/",
+    "session_secret": "expressjs session secret",
+    "cors_origin_whitelist": [
+        "http://localhost:3001" // frontend url
+    ],
+    "allowed_credentials": [
+        "any string for user authentication token"
+    ],
+    "extractor_config": {
+        "runner-map": "/path/to/runner-map.json",
+        "runners": {
+            "example-runner": {
+                "after": "default",
+                "options": [
+                    {
+                        "name": "option_1",
+                        "type": "binary" // frontend will generate a checkbox
+                    },
+                    {
+                        "name": "option_2",
+                        "type": "input" // frontend will generate a text input
+                    },
+                    {
+                        "name": "option_3",
+                        "type": ["item_1", "item_2", "item_3"] // frontend will generate a dropdown menu
+                    }
+                ]
+            }
+        }
+    }
+}

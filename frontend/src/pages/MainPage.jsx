@@ -59,7 +59,6 @@ function MainPage() {
     event.preventDefault();
     document.querySelector('#editor-load-file-input').disabled = true;
     
-    console.log('hello');
     let file = event.target.files[0];
     if (!file) return;
     var reader = new FileReader();

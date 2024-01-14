@@ -2,9 +2,11 @@
 *testing*
 *.md
 *.log
+.env
 
 # folders
 /.vscode/
+/data/
 /**/*testing*/
 /**/node_modules/
 

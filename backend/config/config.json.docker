@@ -1,0 +1,15 @@
+{
+    "host": "0.0.0.0",
+    "port": 3000,
+    "log_filepath": "/src/log/siteextract.log",
+    "log_level": "info",
+    "root_save_path": "/src/data",
+    "session_secret": "expressjs session secret",
+    "cors_origin_whitelist": [
+        "http://siteextract-frontend:3001"
+    ],
+    "allowed_credentials": [
+        "any string for user authentication token"
+    ],
+    "extractor_config": {}
+}
