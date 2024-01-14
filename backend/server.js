@@ -37,6 +37,8 @@ function checkCredential(cookies) {
 }
 
 app.get('/api/runners', async (req, res) => {
+  logger.info(`GET /api/runners`);
+  
   try {
     if (!checkCredential(req.cookies)) {
       logger.warn(`Unauthorized Login`);
@@ -71,6 +73,8 @@ app.get('/api/runners', async (req, res) => {
 });
 
 app.post('/api/extract', async (req, res) => {
+  logger.info(`POST /api/extract`);
+  
   try {
     logger.debug(`req.body: ${JSON.stringify(req.body)}`);
     if (!checkCredential(req.cookies)) {
@@ -127,6 +131,8 @@ if (config.root_save_path && config.root_save_path !== null) {
     '#', '@', '%', '&'
   ];
   app.post('/api/savetoserver', async (req, res) => {
+    logger.info(`POST /api/savetoserver`);
+    
     try {
       logger.debug(`req.body: ${JSON.stringify(req.body)}`);
       if (!checkCredential(req.cookies)) {
