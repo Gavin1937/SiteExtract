@@ -10,3 +10,5 @@
 /**/*testing*/
 /**/node_modules/
 
+# whitelist
+!**/README.md

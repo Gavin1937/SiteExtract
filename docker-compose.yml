@@ -8,10 +8,10 @@ services:
     container_name: siteextract-backend
     restart: unless-stopped
     volumes:
-      - "./data/config:/src/config"
-      - "./data/plugin:/src/plugin/plugin"
-      - "./data:/src/log"
-      - "./data/data:/src/data"
+      - "${CONFIG_PATH}:/src/config"
+      - "${PLUGIN_PATH}:/src/plugin/plugin"
+      - "${LOG_PATH}:/src/log"
+      - "${DATA_PATH}:/src/data"
   
   siteextract-frontend:
     build:
