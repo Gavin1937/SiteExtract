@@ -17,7 +17,7 @@ services:
     build:
       context: frontend/
       args:
-        BASENAME: "/"
+        BASENAME: "${FRONTEND_BASENAME}"
         BACKEND_URL: ""
     image: siteextract-frontend
     container_name: siteextract-frontend
