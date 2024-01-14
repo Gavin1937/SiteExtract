@@ -8,7 +8,7 @@ import Col from 'react-bootstrap/Col';
 import Tab from 'react-bootstrap/Tab';
 import Tabs from 'react-bootstrap/Tabs';
 
-import BACKEND_URL from '../env';
+import env from '../env';
 import RequestEditor from './RequestEditor';
 
 
@@ -97,7 +97,7 @@ function createFormSubmitHandler(name, currentRequestOptions, result_handler, se
       "request_options": currentRequestOptions
     };
     axios.post(
-      `${BACKEND_URL}/api/extract`,
+      `${env.BACKEND_URL}/api/extract`,
       body,
       {withCredentials:true}
     ).then(resp => {

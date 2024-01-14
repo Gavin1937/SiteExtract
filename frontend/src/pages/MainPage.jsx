@@ -11,7 +11,7 @@ import Container from 'react-bootstrap/Container';
 import Row from 'react-bootstrap/Row';
 import Col from 'react-bootstrap/Col';
 
-import BACKEND_URL from '../env';
+import env from '../env';
 import MainForm from '../components/MainForm';
 import SaveEditorContentForm from '../components/SaveEditorContentForm';
 
@@ -27,7 +27,7 @@ function MainPage() {
   const editorRef = useRef(null);
   
   useEffect(() => {
-    axios.get(`${BACKEND_URL}/api/runners`, {withCredentials:true}).then(resp => {
+    axios.get(`${env.BACKEND_URL}/api/runners`, {withCredentials:true}).then(resp => {
       setRunners(resp.data.runners);
     }).catch(error => {
       setRunners(null);

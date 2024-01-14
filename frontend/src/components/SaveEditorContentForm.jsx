@@ -5,7 +5,7 @@ import Container from 'react-bootstrap/Container';
 import Row from 'react-bootstrap/Row';
 import Col from 'react-bootstrap/Col';
 
-import BACKEND_URL from '../env';
+import env from '../env';
 import '../css/fadeout.css';
 
 
@@ -57,7 +57,7 @@ function SaveEditorContentForm(props) {
     };
     try {
       let resp = await axios.post(
-        `${BACKEND_URL}/api/savetoserver`,
+        `${env.BACKEND_URL}/api/savetoserver`,
         body,
         {withCredentials:true}
       );

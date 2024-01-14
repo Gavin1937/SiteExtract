@@ -5,8 +5,10 @@ WORKDIR /src/
 COPY . .
 
 # build
+ARG BASENAME
 ARG BACKEND_URL
 ENV REACT_APP_BACKEND_URL="${BACKEND_URL}"
+ENV REACT_APP_BASENAME="${BASENAME}"
 RUN \
     npm install --force && npm run build
 

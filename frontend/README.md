@@ -5,12 +5,14 @@ You need to supply an url to the backend with one of following ways:
 1. If you want to deploy the app with Docker, you need to provide a `--build-arg` for Docker container as environment variable
 
 ```
+--build-arg='BASENAME=/'
 --build-arg='BACKEND_URL=http://backend_url'
 ```
 
-2. If you want to deploy the app manually, you need to provide either an environment variable `REACT_APP_BACKEND_URL`. Or, you can create a `.env` file under `frontend` folder.
+1. If you want to deploy the app manually, you need to provide either environment variables. Or, you can create a `.env` file under `frontend` folder. The required variables are:
 
 ```sh
+REACT_APP_BASENAME="/"
 REACT_APP_BACKEND_URL="http://backend_url"
 ```
 
@@ -31,6 +33,7 @@ And then, you can run Docker container with:
 ```sh
 docker run -d --rm \
     --name siteextract-frontend \
+    --build-arg='BACKEND_URL=/' \
     --build-arg='BACKEND_URL=http://backend_url' \
     -p 3001:3001 \
     siteextract-frontend
