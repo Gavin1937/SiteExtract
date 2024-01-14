@@ -12,7 +12,7 @@ module.exports = {
     })
     
     // handle options
-    if ('no_img' in options && options.no_img === true) {
+    if (options.no_img && options.no_img === true) {
       doc.querySelectorAll('img').forEach(img => {
         let p = doc.createElement('p');
         p.textContent = `[${img.getAttribute('alt')}]`;
@@ -20,7 +20,7 @@ module.exports = {
       });
     }
     
-    if ('no_link' in options && options.no_link === true) {
+    if (options.no_link && options.no_link === true) {
       doc.querySelectorAll('a[href]').forEach(a => {
         let p = doc.createElement('p');
         p.textContent = a.textContent;

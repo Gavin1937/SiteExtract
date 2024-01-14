@@ -10,7 +10,7 @@ class Extractor
   
   constructor(config, logger) {
     this.config = config;
-    if ('runner-map' in this.config) {
+    if (this.config['runner-map']) {
       this.runner_map = require(this.config['runner-map']);
     }
     this.logger = logger;
@@ -23,7 +23,7 @@ class Extractor
     this.runners = {
       default: require('./plugin/default-runner.js')
     };
-    if ('runners' in this.config) {
+    if (this.config.runners) {
       for (const runner_name in this.config.runners) {
         loadPlugin(runner_name).then((mod) => {
           this.runners[runner_name] = mod;
@@ -78,10 +78,10 @@ class Extractor
   
   async run_preprocess(runner, doc, options) {
     return new Promise(async (resolve, reject) => {
-      if (runner in this.runners) {
+      if (this.runners[runner]) {
         // run parent runner
-        if (runner !== 'default' && 'after' in this.config.runners[runner]) {
-          doc = await this.run_preprocess(this.config.runners[runner]['after'], doc, options);
+        if (runner !== 'default' && this.config.runners[runner].after) {
+          doc = await this.run_preprocess(this.config.runners[runner].after, doc, options);
         }
         // run current runner
         await this.runners[runner].preprocess(doc, options).then((result) => {
@@ -97,10 +97,10 @@ class Extractor
   
   async run_postprocess(runner, markdown, options) {
     return new Promise(async (resolve, reject) => {
-      if (runner in this.runners) {
+      if (this.runners[runner]) {
         // run parent runner
-        if (runner !== 'default' && 'after' in this.config.runners[runner]) {
-          markdown = await this.run_postprocess(this.config.runners[runner]['after'], markdown, options);
+        if (runner !== 'default' && this.config.runners[runner].after) {
+          markdown = await this.run_postprocess(this.config.runners[runner].after, markdown, options);
         }
         // run current runner
         await this.runners[runner].postprocess(markdown, options).then((result) => {

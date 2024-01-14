@@ -81,7 +81,7 @@ app.post('/api/extract', async (req, res) => {
       });
     }
     
-    if (!('url' in req.body)) {
+    if (!(req.body.url)) {
       return res.status(400).json({
         ok: false,
         message: 'Missing url'
@@ -89,9 +89,9 @@ app.post('/api/extract', async (req, res) => {
     }
     
     let url = req.body.url;
-    let runner = ('runner' in req.body) ? req.body.runner : null;
-    let request_options = ('request_options' in req.body) ? req.body.request_options : {};
-    let runner_options = ('runner_options' in req.body) ? req.body.runner_options : {};
+    let runner = (req.body.runner) ? req.body.runner : null;
+    let request_options = (req.body.request_options) ? req.body.request_options : {};
+    let runner_options = (req.body.runner_options) ? req.body.runner_options : {};
     
     let result = null;
     try {
@@ -137,7 +137,7 @@ if (config.root_save_path && config.root_save_path !== null) {
         });
       }
       
-      if (!('path' in req.body) || !('content' in req.body)) {
+      if (!(req.body.path) || !(req.body.content)) {
         return res.status(400).json({
           ok: false,
           message: 'Missing json parameter'
