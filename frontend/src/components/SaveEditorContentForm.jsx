@@ -49,8 +49,6 @@ function SaveEditorContentForm(props) {
     disableActionBtn();
     let input = document.querySelector('#save-editor-save-server-input');
     let prompt = document.querySelector('#save-editor-save-server-prompt');
-    prompt.style.display = 'inline-block';
-    prompt.style.animation = null;
     let body = {
       path: input.value,
       content: props.contentGetter(),
@@ -62,6 +60,9 @@ function SaveEditorContentForm(props) {
         {withCredentials:true}
       );
       props.setErrorMsg(null);
+      prompt.style.display = 'inline-block';
+      prompt.style.animation = null;
+      setTimeout(() => {prompt.style.animation = 'fadeout-animate 2.5s forwards';}, 1);
     } catch (error) {
       let error_msg = error.response.data.message;
       if (error.response.status === 401) {
@@ -76,7 +77,6 @@ function SaveEditorContentForm(props) {
       setTimeout(_ => window.scrollTo(0, 0), 1);
     }
     enableActionBtn();
-    prompt.style.animation = 'fadeout-animate 2.5s forwards';
   }
   
   return (
