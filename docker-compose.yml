@@ -6,6 +6,7 @@ services:
       context: backend/
     image: siteextract-backend
     container_name: siteextract-backend
+    user: "${USER_ID}:${GROUP_ID}"
     restart: unless-stopped
     volumes:
       - "${CONFIG_PATH}:/src/config"
