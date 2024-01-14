@@ -79,7 +79,10 @@ function SaveEditorContentForm(props) {
   return (
     <Container fluid>
       <Row className="py-1">
-        <Col xs={2} className="px-0 mx-0">
+        <Col
+          lg={6} md={6} sm={12} xs={12}
+          className="px-0 mx-0"
+        >
           <Button
             key={"save-editor-save-file-btn"}
             id={"save-editor-save-file-btn"}
@@ -100,7 +103,10 @@ function SaveEditorContentForm(props) {
           onSubmit={onSaveToServer}
         >
           <Row>
-            <Col xs={3} className="py-2 px-0 mx-0">
+            <Col
+              lg={6} md={6} sm={12} xs={12}
+              className="py-2 px-0 mx-0"
+            >
               <Form.Control
                 type="input"
                 key={"save-editor-save-server-input"}
@@ -110,7 +116,10 @@ function SaveEditorContentForm(props) {
             </Col>
           </Row>
           <Row className="py-1">
-            <Col className="px-0 mx-0 d-flex align-items-center">
+            <Col
+              lg={6} md={6} sm={12} xs={12}
+              className="px-0 mx-0 d-flex align-items-center"
+            >
               <Button
                 type="submit"
                 key={"save-editor-save-server-btn"}

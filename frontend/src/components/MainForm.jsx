@@ -159,7 +159,10 @@ function MainForm(props) {
             </Row>
             
             <Row>
-              <Col xs={3}>
+              <Col
+                lg={3} md={5} sm={12} xs={12}
+                className="pb-1"
+              >
                 <RequestEditor request={requestOptions} setRequest={setRequestOptions}/>
               </Col>
               <Col>

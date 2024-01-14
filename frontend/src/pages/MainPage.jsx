@@ -115,7 +115,10 @@ function MainPage() {
       >
         <Row className="my-3" style={{display:"flex", alignItems: "center"}}>
           
-          <Col xs={3}>
+          <Col
+            lg={3} md={6} sm={12} xs={12}
+            className="pb-1"
+          >
             <Form.Group>
               <Form.Label>
                 Load A File From Disk
@@ -131,7 +134,9 @@ function MainPage() {
             </Form.Group>
           </Col>
           
-          <Col xs={2} className="px-0 mx-0">
+          <Col
+            lg={2} md={3} sm={6} xs={6}
+          >
             <Button
               variant="danger"
               type="button"
@@ -144,7 +149,10 @@ function MainPage() {
             </Button>
           </Col>
           
-          <Col className="px-0 mx-0">
+          <Col
+            lg={2} md={3} sm={6} xs={6}
+            className="px-0 mx-0"
+          >
             <Button
               variant="success"
               type="button"
@@ -153,6 +161,7 @@ function MainPage() {
               className="action-btn"
               onClick={_ => {
                 disableActionBtn();
+                document.querySelector('#save-editor-save-server-prompt').style.display = "none";
                 setExpandSaveMenu(!expandSaveMenu);
                 setSaveMenuText(expandSaveMenu ? "Save Editor Content" : "Hide Menu");
                 enableActionBtn();
