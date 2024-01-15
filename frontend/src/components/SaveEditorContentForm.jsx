@@ -152,8 +152,7 @@ function SaveEditorContentForm(props) {
               <Button type="submit">Save</Button>
             </Modal.Footer>
           </Form>
-      </Modal>
-      
+        </Modal>
       </Row>
       
       {
