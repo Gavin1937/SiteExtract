@@ -22,6 +22,7 @@ function SaveEditorContentForm(props) {
   async function onSaveToFile() {
     disableActionBtn();
     // https://stackoverflow.com/a/67806663
+    // https://stackoverflow.com/a/65050772
     try {
       const content = props.contentGetter();
       if (window.showSaveFilePicker) {
@@ -32,8 +33,9 @@ function SaveEditorContentForm(props) {
       }
       else {
         const saveFile = document.createElement("a");
-        saveFile.href = URL.createObjectURL( content );
-        saveFile.download= "output.md";
+        let contentBlob = new Blob([content], {type: 'text/plain'});
+        saveFile.href = URL.createObjectURL(contentBlob);
+        saveFile.download = "output.md";
         saveFile.click();
         setTimeout(() => URL.revokeObjectURL(saveFile.href), 60000 );
       }
