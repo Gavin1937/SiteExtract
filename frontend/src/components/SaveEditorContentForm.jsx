@@ -40,6 +40,8 @@ function SaveEditorContentForm(props) {
     if (input.value.trim().length > 0) {
       filename = input.value;
       setOutputFilename(input.value);
+    } else {
+      setOutputFilename(filename);
     }
     const content = props.contentGetter();
     const saveFile = document.createElement("a");
@@ -139,7 +141,7 @@ function SaveEditorContentForm(props) {
         >
           <Form onSubmit={onSaveToFile_SaveBtnClick}>
             <Modal.Header closeButton>
-              Save File
+              Set Filename
             </Modal.Header>
             <Modal.Body>
               <Form.Control
