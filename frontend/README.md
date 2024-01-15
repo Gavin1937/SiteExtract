@@ -60,3 +60,7 @@ serve -p port_number ./build/
 ```
 
 > Note: using `serve` may cause issue on path routing, consider use nginx with [nginx.conf](./nginx.conf) file under `frontend` folder
+
+> Note: deploying the frontend with **HTTP** will causing some of the JavaScript features been disabled.
+> In our case, `window.showSaveFilePicker` will be disabled, and "Save Editor Content To File" feature may
+> trigger browser warning about insecure file.

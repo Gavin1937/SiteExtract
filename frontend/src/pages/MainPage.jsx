@@ -72,8 +72,6 @@ function MainPage() {
   }
   
   function onLoadMarkdownFromFile(files) {
-    console.log(files);
-    
     let file = files[0];
     if (!file) return;
     var reader = new FileReader();

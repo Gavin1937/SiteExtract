@@ -1,15 +1,28 @@
+import { useState } from 'react';
 import axios from 'axios';
 import Form from 'react-bootstrap/Form';
 import Button from 'react-bootstrap/Button';
 import Container from 'react-bootstrap/Container';
 import Row from 'react-bootstrap/Row';
 import Col from 'react-bootstrap/Col';
+import Modal from 'react-bootstrap/Modal';
 
 import env from '../env';
 import '../css/fadeout.css';
 
 
 function SaveEditorContentForm(props) {
+  
+  const [saveFileModalState, setSaveFileModalState] = useState(false);
+  const [outputFilename, setOutputFilename] = useState("output.md");
+  
+  function hideSaveFileModal() {
+    setSaveFileModalState(false);
+  }
+  
+  function showSaveFileModal() {
+    setSaveFileModalState(true);
+  }
   
   function disableActionBtn() {
     document.querySelectorAll('.action-btn').forEach(a => {a.disabled = true;});
@@ -19,12 +32,33 @@ function SaveEditorContentForm(props) {
     document.querySelectorAll('.action-btn').forEach(a => {a.disabled = false;});
   }
   
+  function onSaveToFile_SaveBtnClick(envent) {
+    envent.preventDefault();
+    hideSaveFileModal();
+    let input = document.querySelector('#save-editor-save-file-set-filename-input');
+    let filename = "output.md";
+    if (input.value.trim().length > 0) {
+      filename = input.value;
+      setOutputFilename(input.value);
+    }
+    const content = props.contentGetter();
+    const saveFile = document.createElement("a");
+    let contentBlob = new Blob([content], {type: 'application/x-binary'});
+    saveFile.href = URL.createObjectURL(contentBlob);
+    saveFile.download = filename;
+    saveFile.click();
+    setTimeout(() => URL.revokeObjectURL(saveFile.href), 60000);
+  }
+  
   async function onSaveToFile() {
     disableActionBtn();
     // https://stackoverflow.com/a/67806663
     // https://stackoverflow.com/a/65050772
     try {
       const content = props.contentGetter();
+      // window.showSaveFilePicker only available with HTTPS or localhost.
+      // Thus hosting this app on HTTP will jump to the else case,
+      // which may trigger browser warning about insecure file.
       if (window.showSaveFilePicker) {
         const handle = await showSaveFilePicker();
         const writable = await handle.createWritable();
@@ -32,12 +66,7 @@ function SaveEditorContentForm(props) {
         writable.close();
       }
       else {
-        const saveFile = document.createElement("a");
-        let contentBlob = new Blob([content], {type: 'text/plain'});
-        saveFile.href = URL.createObjectURL(contentBlob);
-        saveFile.download = "output.md";
-        saveFile.click();
-        setTimeout(() => URL.revokeObjectURL(saveFile.href), 60000 );
+        showSaveFileModal();
       }
     } catch(error) {
       console.log("Save To File Canceled");
@@ -100,6 +129,33 @@ function SaveEditorContentForm(props) {
             Save To File
           </Button>
         </Col>
+        
+        <Modal
+          show={saveFileModalState}
+          onHide={hideSaveFileModal}
+          size="lg"
+          aria-labelledby="contained-modal-title-vcenter"
+          centered
+        >
+          <Form onSubmit={onSaveToFile_SaveBtnClick}>
+            <Modal.Header closeButton>
+              Save File
+            </Modal.Header>
+            <Modal.Body>
+              <Form.Control
+                type="text"
+                id="save-editor-save-file-set-filename-input"
+                key="save-editor-save-file-set-filename-input"
+                aria-describedby="save-editor-save-file-set-filename-input"
+                placeholder={outputFilename ? outputFilename : "Enter Filename"}
+              />
+            </Modal.Body>
+            <Modal.Footer>
+              <Button type="submit">Save</Button>
+            </Modal.Footer>
+          </Form>
+      </Modal>
+      
       </Row>
       
       {
