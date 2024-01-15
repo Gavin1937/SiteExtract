@@ -14,7 +14,6 @@ import '../css/fadeout.css';
 function SaveEditorContentForm(props) {
   
   const [saveFileModalState, setSaveFileModalState] = useState(false);
-  const [outputFilename, setOutputFilename] = useState("output.md");
   
   function hideSaveFileModal() {
     setSaveFileModalState(false);
@@ -38,10 +37,7 @@ function SaveEditorContentForm(props) {
     let input = document.querySelector('#save-editor-save-file-set-filename-input');
     let filename = "output.md";
     if (input.value.trim().length > 0) {
-      filename = input.value;
-      setOutputFilename(input.value);
-    } else {
-      setOutputFilename(filename);
+      filename = input.value.trim();
     }
     const content = props.contentGetter();
     const saveFile = document.createElement("a");
@@ -149,7 +145,7 @@ function SaveEditorContentForm(props) {
                 id="save-editor-save-file-set-filename-input"
                 key="save-editor-save-file-set-filename-input"
                 aria-describedby="save-editor-save-file-set-filename-input"
-                placeholder={outputFilename ? outputFilename : "Enter Filename"}
+                placeholder="output.md"
               />
             </Modal.Body>
             <Modal.Footer>
