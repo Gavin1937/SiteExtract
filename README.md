@@ -46,5 +46,6 @@ docker-compose down
 1. [json-editor/json-editor](https://github.com/json-editor/json-editor) and [techfreaque/json-editor-react](https://github.com/techfreaque/json-editor-react) for JSON editor
 2. [nhn/tui.editor](https://github.com/nhn/tui.editor) for Markdown editor
 3. [mixmark-io/turndown](https://github.com/mixmark-io/turndown) for HTML to Markdown converter
-4. [ai-icon-generator](https://perchance.org/ai-icon-generator) for icon generation
+4. [react-dropzone](https://react-dropzone.js.org/) for Drop & Click file upload
+5. [ai-icon-generator](https://perchance.org/ai-icon-generator) for icon generation
 

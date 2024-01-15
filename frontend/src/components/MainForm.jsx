@@ -67,11 +67,9 @@ function createOptionUI(id_prefix, options) {
   return output;
 }
 
-function createFormSubmitHandler(name, currentRequestOptions, result_handler, setErrorMsg, additionalOnSubmitHandler, navigate) {
+function createFormSubmitHandler(name, currentRequestOptions, result_handler, setErrorMsg, navigate) {
   return function (event) {
     event.preventDefault();
-    
-    additionalOnSubmitHandler();
     
     let values = {};
     let form = document.querySelector(`form[id*="${name}"]`);
@@ -135,7 +133,7 @@ function MainForm(props) {
         <Container>
           <Form
             id={`${k}-form`}
-            onSubmit={createFormSubmitHandler(k, requestOptions, props.contentSetter, props.setErrorMsg, props.onFormSubmit, props.navigate)}
+            onSubmit={createFormSubmitHandler(k, requestOptions, props.contentSetter, props.setErrorMsg, props.navigate)}
           >
             <Row>
               <Form.Group
