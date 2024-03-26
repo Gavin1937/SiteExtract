@@ -20,7 +20,7 @@ You need to provide a `config.json` file under `backend/config` folder. Here is 
         "runner-map": "/path/to/runner-map.json",
         "runners": {
             "example-runner": {
-                "before": "default",
+                "after": "default",
                 "options": [
                     {
                         "name": "option_1",
@@ -112,7 +112,7 @@ In your `config.json` file, the `extractor_config` field is for plugin configura
     "runner-map": "/path/to/runner-map.json",
     "runners": {
         "example-runner": {
-            "before": "default",
+            "after": "default",
             "options": [
                 {
                     "name": "option_1",
@@ -135,7 +135,7 @@ In your `config.json` file, the `extractor_config` field is for plugin configura
 * `runner-map`: path to a `runner-map.json` file to help the backend map url to your plugin. [More detail in here](#configure-runner-mapjson)
 * `runners`: an object describe your plugin
   * `example-runner`: this is a string name of the runner, in this case `example-runner`. It can be any string.
-    * `before`: name of another runner, default is `default` (default-runner). This field will tell the backend to run this plugin **before** the specified plugin. The backend will run plugins recursively until reaches `default`
+    * `after`: name of another runner, default is `default` (default-runner). This field will tell the backend to run this plugin **after** the specified plugin. The backend will run plugins recursively until reaches `default`
     * `options`: list of objects, those objects describes different options that this plugin will take in as parameter. In [default-runner.js](./plugin/default-runner.js), options are `no_img` and `no_link`.
       * The individual option is an object that tells the frontend the name of object and its input type.
       * `name`: it can be any string, but I suggest to avoid using `-` as it is widely used in the frontend
