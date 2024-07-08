@@ -3,6 +3,7 @@ const { JSDOM } = require("jsdom");
 var TurndownService = require('turndown');
 const keepDetails = require('./keep-details.js');
 const loadPlugin = require('./plugin/loader.js');
+var encoding = require("encoding");
 
 
 class Extractor
@@ -49,12 +50,27 @@ class Extractor
           url: url,
           headers: (('headers' in request_option) ? request_option.headers : {}),
           cookies: (('cookies' in request_option) ? request_option.cookies : null),
+          responseType: 'arraybuffer', // force response type to be ArrayBuffer
         };
         axios_option.headers['User-Agent'] = 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36';
         let resp = await axios(axios_option);
         
+        // transcode html text to UTF-8
+        // get most_frequent_encoding
+        let resp_str = (new TextDecoder('UTF-8')).decode(resp.data);
+        let matches = resp_str.matchAll(/\<meta.*charset=["']?([^"';\s]+)["']?.*\>/gm);
+        let encodings = [];
+        for (let m of matches) { encodings.push(m[1]); }
+        let most_frequent_encoding = Array.from(new Set(encodings)).reduce((prev, curr) =>
+          array.filter(el => el === curr).length > array.filter(el => el === prev).length ? curr : prev
+        );
+        // transcode & update charset attribute
+        let transcoded_html = encoding.convert(resp.data, 'UTF-8', most_frequent_encoding);
+        transcoded_html = (new TextDecoder('UTF-8')).decode(transcoded_html);
+        transcoded_html = transcoded_html.replaceAll(most_frequent_encoding, 'UTF-8');
+        
         // sanitize html
-        let html = resp.data;
+        let html = transcoded_html;
         let doc = await new JSDOM(html, {contentType: "text/html"}).window.document;
         
         // preprocessing
