@@ -64,6 +64,7 @@ class Extractor
         let most_frequent_encoding = Array.from(new Set(encodings)).reduce((prev, curr) =>
           array.filter(el => el === curr).length > array.filter(el => el === prev).length ? curr : prev
         );
+        this.logger.deubg(`most_frequent_encoding: ${most_frequent_encoding}`);
         // transcode & update charset attribute
         let transcoded_html = encoding.convert(resp.data, 'UTF-8', most_frequent_encoding);
         transcoded_html = (new TextDecoder('UTF-8')).decode(transcoded_html);
