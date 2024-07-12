@@ -36,6 +36,39 @@ class Extractor
   }
   
   async extract(request_option, runner, url, options) {
+    async function __response_processing(self, resp) {
+        // transcode html text to UTF-8
+        // get most_frequent_encoding
+        let resp_str = (new TextDecoder('UTF-8')).decode(resp.data);
+        let matches = resp_str.matchAll(/\<meta.*charset=["']?([^"';\s]+)["']?.*\>/gm);
+        let encodings = [];
+        for (let m of matches) { encodings.push(m[1]); }
+        let most_frequent_encoding = Array.from(new Set(encodings)).reduce((prev, curr) =>
+          array.filter(el => el === curr).length > array.filter(el => el === prev).length ? curr : prev
+        );
+        self.logger.debug(`most_frequent_encoding: ${most_frequent_encoding}`);
+        // transcode & update charset attribute
+        let transcoded_html = encoding.convert(resp.data, 'UTF-8', most_frequent_encoding);
+        transcoded_html = (new TextDecoder('UTF-8')).decode(transcoded_html);
+        transcoded_html = transcoded_html.replaceAll(most_frequent_encoding, 'UTF-8');
+        
+        // sanitize html
+        let html = transcoded_html;
+        let doc = await new JSDOM(html, {contentType: "text/html"}).window.document;
+        
+        // preprocessing
+        let new_doc = await self.run_preprocess(runner, doc, options);
+        
+        // html to markdown
+        let htmlstr = new_doc;
+        let markdown = await self.turndownService.turndown(htmlstr);
+        
+        // postprocessing
+        markdown = await self.run_postprocess(runner, markdown, options);
+        
+        return markdown;
+    }
+    
     return new Promise(async (resolve, reject) => {
       try {
         // try find runner
@@ -52,42 +85,23 @@ class Extractor
           cookies: (('cookies' in request_option) ? request_option.cookies : null),
           responseType: 'arraybuffer', // force response type to be ArrayBuffer
         };
-        axios_option.headers['User-Agent'] = 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36';
+        axios_option.headers['User-Agent'] = 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/126.0.0.0 Safari/537.36';
         let resp = await axios(axios_option);
         
-        // transcode html text to UTF-8
-        // get most_frequent_encoding
-        let resp_str = (new TextDecoder('UTF-8')).decode(resp.data);
-        let matches = resp_str.matchAll(/\<meta.*charset=["']?([^"';\s]+)["']?.*\>/gm);
-        let encodings = [];
-        for (let m of matches) { encodings.push(m[1]); }
-        let most_frequent_encoding = Array.from(new Set(encodings)).reduce((prev, curr) =>
-          array.filter(el => el === curr).length > array.filter(el => el === prev).length ? curr : prev
-        );
-        this.logger.debug(`most_frequent_encoding: ${most_frequent_encoding}`);
-        // transcode & update charset attribute
-        let transcoded_html = encoding.convert(resp.data, 'UTF-8', most_frequent_encoding);
-        transcoded_html = (new TextDecoder('UTF-8')).decode(transcoded_html);
-        transcoded_html = transcoded_html.replaceAll(most_frequent_encoding, 'UTF-8');
-        
-        // sanitize html
-        let html = transcoded_html;
-        let doc = await new JSDOM(html, {contentType: "text/html"}).window.document;
-        
-        // preprocessing
-        let new_doc = await this.run_preprocess(runner, doc, options);
-        
-        // html to markdown
-        let htmlstr = new_doc;
-        let markdown = await this.turndownService.turndown(htmlstr);
-        
-        // postprocessing
-        markdown = await this.run_postprocess(runner, markdown, options);
-        
+        let markdown = await __response_processing(this, resp);
         resolve(markdown);
         
       } catch (error) {
-        this.logger.error(`Exception: ${error}`);
+        this.logger.error(`Exception Lv1: ${error}`);
+        // give a 2nd try, for special case when the server returns html w/ 404 error
+        try {
+          let markdown = await __response_processing(this, error.response);
+          resolve(markdown);
+        } catch (error2) {
+          // fail to parse error.response, this is real error
+          this.logger.error(`Exception Lv2: ${error2}`)
+          reject(error);
+        }
         reject(error);
       }
     });
